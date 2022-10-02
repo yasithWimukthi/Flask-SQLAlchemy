@@ -1,12 +1,22 @@
 from flask import Flask
+from flask_restful import Api
+from  flask_jwt import JWT
+
+from security import authenticate, identity
+from user import UserRegister
+from item import Item, ItemList
 
 app = Flask(__name__)
+app.secret_key = "secret"
+api = Api(app)
+
+jwt = JWT(app, authenticate, identity) # /auth
 
 
-@app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
-
+api.add_resource(Item, '/item/<string:name>')
+api.add_resource(ItemList, '/items')
+api.add_resource(UserRegister, '/register')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5000, debug=True)
+
